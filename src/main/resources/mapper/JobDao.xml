@@ -63,6 +63,11 @@
         ORDER BY j.job_id DESC
     </select>
 
+
+    <select id="executeSql" parameterType="String" resultType="java.util.Map" >
+        <![CDATA[${value}]]>
+    </select>
+
     <select id="getJobListAdmin" resultType="org.cboard.pojo.DashboardJob">
         SELECT
                j.job_id         AS id,

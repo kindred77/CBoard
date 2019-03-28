@@ -472,8 +472,24 @@ cBoard.controller('datasetCtrl', function ($scope, $http, $state, $stateParams, 
         });
     };
 
-    $scope.loadData = function (reload) {
+    $scope.executeSql =function(){
+        var arrayObj = new Array();//创建一个数组
+        $http.post("dashboard/queryJobList.do", {sql: $scope.curWidget.query.sql}).success(function (data) {
+            var siteMap = eval(data);
+            for(var j=0;j<siteMap.length;j++){
+                $.each(siteMap[j],function(key,value){
+                    if(0==j){
+                        arrayObj.push(key);
+                    }
+                });
+            }
+            $scope.titleName=arrayObj;
+            $scope.valueStr=siteMap;
+            $scope.dataState=true;
+        });
+    }
 
+    $scope.loadData = function (reload) {
         if (reload != true) {
             reload = false;
         }
@@ -517,6 +533,7 @@ cBoard.controller('datasetCtrl', function ($scope, $http, $state, $stateParams, 
                 $scope.curDataset.data.selects = $scope.selects;
             }
         });
+        $('#myModal').modal('show');
     };
 
     var cleanPreview = function () {

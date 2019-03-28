@@ -1,10 +1,12 @@
 package org.cboard.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.cboard.pojo.DashboardJob;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yfyuan on 2017/2/17.
@@ -28,5 +30,7 @@ public interface JobDao {
     DashboardJob getJob(Long jobId);
 
     long checkJobRole(String userId, Long jobId, String permissionPattern);
+
+    List<Map<String,Object>> executeSql(@Param(value="value")String sql);
 
 }

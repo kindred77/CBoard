@@ -6,6 +6,7 @@ import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.hash.Hashing;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.cboard.dao.*;
@@ -18,6 +19,12 @@ import org.cboard.pojo.*;
 import org.cboard.services.*;
 import org.cboard.services.job.JobService;
 import org.cboard.services.persist.excel.XlsProcessService;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,12 +36,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -364,6 +369,13 @@ public class DashboardController extends BaseController {
         return jobDao.getJobList(tlUser.get().getUserId()).stream().map(ViewDashboardJob::new).collect(Collectors.toList());
     }
 
+    @RequestMapping(value = "/queryJobList")
+    public List<Map<String,Object>> queryJobList(@RequestParam(name = "sql") String sql) {
+        List<Map<String,Object>> ma=jobDao.executeSql(sql);
+        System.out.println(ma.toString());
+        return ma;
+    }
+
     @RequestMapping(value = "/deleteJob")
     public ServiceStatus deleteJob(@RequestParam(name = "id") Long id) {
         return jobService.delete(tlUser.get().getUserId(), id);
@@ -465,4 +477,5 @@ public class DashboardController extends BaseController {
         }
         return templateDir;
     }
+
 }
